@@ -73,7 +73,7 @@ WSGI_APPLICATION = 'django_admin_sample.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-
+# database 세팅 - MYSQL - mato
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
