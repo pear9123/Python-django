@@ -7,6 +7,7 @@ from django.views.generic import ListView, DetailView
 # Create your views here.
 # MTV : Model - template - view
 # java의 MVC와 같은 개념
+
 #IndexView
 class IndexView(ListView):
     template_name = 'polls/index.html'
