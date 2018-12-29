@@ -5,6 +5,8 @@ from hello_app.models import Question, Choice
 from django.views.generic import ListView, DetailView
 
 # Create your views here.
+# MTV : Model - template - view
+# java의 MVC와 같은 개념
 
 #IndexView
 class IndexView(ListView):
