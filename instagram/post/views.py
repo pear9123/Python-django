@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from .models import Post, Comment
-from .forms import CommentForm
+from .forms import CommentForm, PostForm
 from django.contrib import messages
 
 # Create your views here.
@@ -13,6 +13,9 @@ def post_list(request):
     return render(request, 'post/post_list.html', context)
 
 def comment_create(request, post_pk):
+    # GET 파라미터로 전달된 작업 완료 후 이동할 URL값
+    next_path = request.GET.get('next')
+
     # 요청 메서드가 POST방식 일 때만 처리
     if request.method == 'POST':
         # Post인스턴스를 가져오거나 404 Response를 돌려줌
@@ -42,8 +45,10 @@ def comment_create(request, post_pk):
                      for error in value]))
             messages.error(request, error_msg)
 
-        # comment_form이 valid하건 하지않건
-        # 'post'네임스페이스를 가진 url의 'post_list'이름에 해당하는 뷰로 이동
+        # next paramater에 값이 담겨 온 경우, 해당 경로로 이동
+        if next_path:
+            return redirect(next_path)
+        # next paramater가 빈 경우 post_list뷰로 이동
         return redirect('post:post_list')
 
 def post_detail(request, post_pk):
@@ -54,3 +59,25 @@ def post_detail(request, post_pk):
         'comment_form':comment_form,
     }
     return render(request, 'post/post_detail.html',context)
+
+def post_create(request):
+    if request.method == 'POST':
+        # PostForm은 파일을 처리하므로 request.FILES도 함께 바인딩
+        post_form = PostForm(request.POST, request.FILES)
+        if post_form.is_valid():
+            # author 필드를 채우기 위해 인스턴스만 생성
+            post = post_form.save(commit=False)
+            # author 필드를 채운 후 DB에 저장
+            post.author = request.user
+            post.save()
+
+            # 성공 알림을 messages에 추가 후 post_list뷰로 이동
+            messages.success(request, '사진이 등록되었습니다.')
+            return redirect('post:post_list')
+    else:
+        post_form = PostForm()
+
+    context = {
+        'post_form':post_form,
+    }
+    return render(request, 'post/post_create.html', context)

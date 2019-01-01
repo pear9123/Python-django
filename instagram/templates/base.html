@@ -8,9 +8,7 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
 	<link rel="stylesheet" href="{% static 'css/style.css' %}">
-  <!-- <link>태그들 아래에 추가 -->
-  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+	<script src="{% static 'js/jquery.min.js' %}"></script>
 	<script src="{% static 'js/bootstrap.min.js' %}"></script>
 	<title>Instagram</title>
 </head>
@@ -30,6 +28,7 @@
 			</form>
 			<ul class="nav navbar-nav navbar-right">
 				{% if user.is_authenticated %}
+				<li><a href="{% url 'post:post_create' %}">+ Add post</a></li>
 				<li><a href="">Likes</a></li>
 				<li><a href="">Profile</a></li>
 				<li><a href="{% url 'member:logout' %}">Logout</a></li>
@@ -41,7 +40,7 @@
 		</div>
 	</div>
 </nav>
-	<div class="container">
+<div class="container">
 		{% if messages %}
 			{% for message in messages %}
 				<div class="alert-message alert
@@ -61,6 +60,7 @@
 		<h1>{% block title %}{% endblock %}</h1>
 
 		{% block content %}
+
 		{% endblock %}
 	</div>
 </body>

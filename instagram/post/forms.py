@@ -1,5 +1,15 @@
 from django import forms
-from .models import Comment
+
+from .models import Comment, Post
+
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = (
+            'photo',
+        )
+
 
 class CommentForm(forms.ModelForm):
     class Meta:
@@ -7,11 +17,11 @@ class CommentForm(forms.ModelForm):
         fields = (
             'content',
         )
-        widget = {
-            'content':forms.TextInput(
+        widgets = {
+            'content': forms.TextInput(
                 attrs={
-                    'class':'content',
-                    'placeholder':'댓글 달기...',
+                    'class': 'content',
+                    'placeholder': '댓글 달기...',
                 }
             )
         }
