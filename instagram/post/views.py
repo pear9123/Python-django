@@ -3,6 +3,8 @@ from django.http import HttpResponse
 from .models import Post, Comment
 from .forms import CommentForm, PostForm
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from utils.decorators import login_required
 
 # Create your views here.
 def post_list(request):
@@ -12,6 +14,7 @@ def post_list(request):
     }
     return render(request, 'post/post_list.html', context)
 
+@login_required
 def comment_create(request, post_pk):
     # GET 파라미터로 전달된 작업 완료 후 이동할 URL값
     next_path = request.GET.get('next')
@@ -60,6 +63,7 @@ def post_detail(request, post_pk):
     }
     return render(request, 'post/post_detail.html',context)
 
+@login_required
 def post_create(request):
     if request.method == 'POST':
         # PostForm은 파일을 처리하므로 request.FILES도 함께 바인딩
@@ -81,3 +85,27 @@ def post_create(request):
         'post_form':post_form,
     }
     return render(request, 'post/post_create.html', context)
+
+# POST요청에 대해 커스터마이징한 login_required를 사용한다
+@login_required
+def post_like_toggle(request, post_pk):
+    # GET파라미터로 전달된 이동할 URL
+    next_path = request.GET.get('next')
+    # post_pk에 해당하는 Post객체
+    post = get_object_or_404(Post, pk=post_pk)
+    # 요청한 사용자
+    user = request.user
+
+    # 사용자의 like_posts목록에서 like_toggle할 Post가 있는지 확인
+    filtered_like_posts = user.like_posts.filter(pk=post.pk)
+    # 존재할경우, like_posts목록에서 해당 Post를 삭제
+    if filtered_like_posts.exists():
+        user.like_posts.remove(post)
+    # 없을 경우, like_posts목록에 해당 Post를 추가
+    else:
+        user.like_posts.add(post)
+
+    # 이동할 path가 존재할 경우 해당 위치로, 없을 경우 Post상세페이지로 이동
+    if next_path:
+        return redirect(next_path)
+    return redirect('post:post_detail', post_pk=post_pk)

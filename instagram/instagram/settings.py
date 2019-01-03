@@ -27,7 +27,13 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# 사용자 정의 유저 모델
 AUTH_USER_MODEL = 'member.User'
+# 로그인이 완료되면 이동할 URL
+LOGIN_REDIRECT_URL = 'post:post_list'
+# 로그인이 필요할 경우 이동할 URL
+LOGIN_URL = 'member:login'
+
 # Application definition
 
 INSTALLED_APPS = [
