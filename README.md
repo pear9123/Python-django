@@ -6,6 +6,7 @@
 >- [참고자료](https://lhy.kr/)
 
 ## version
+## 2019.01.06
 
 - Python > 3.6
 - django > 2.1
